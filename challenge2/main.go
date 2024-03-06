@@ -92,7 +92,25 @@ func NetHttp() {
 		}
 
 		// Delete /users/:id untuk delete user by id
+		if r.Method == http.MethodDelete {
+			pathValue, _ := strconv.Atoi(r.PathValue("id"))
 
+			for i, user := range users {
+				if user.ID == uint(pathValue) {
+					users[i] = user
+
+					users = append(users[0:i], users[i+1:]...)
+
+					w.WriteHeader(http.StatusAccepted)
+					json.NewEncoder(w).Encode(users)
+					return
+				}
+			}
+
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode("Success : false")
+			return
+		}
 	})
 
 	// :8080 PORT
@@ -100,6 +118,6 @@ func NetHttp() {
 	if err != nil {
 		panic(err)
 	} else {
-		fmt.Println("Listen to port 3000")
+		fmt.Println("Listen to port 80")
 	}
 }
