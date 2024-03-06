@@ -14,6 +14,7 @@ type User struct {
 }
 
 var users []User
+var lastUserIdCreated = 0
 
 func main() {
 	NetHttp()
@@ -37,7 +38,8 @@ func NetHttp() {
 				return
 			}
 
-			user.ID = uint(len(users) + 1)
+			lastUserIdCreated++
+			user.ID = uint(lastUserIdCreated)
 			users = append(users, user)
 
 			w.WriteHeader(http.StatusAccepted)
