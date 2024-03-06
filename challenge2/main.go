@@ -87,7 +87,8 @@ func NetHttp() {
 			}
 
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(User{})
+			res := errorResponseMap("user with id did not exist")
+			json.NewEncoder(w).Encode(res)
 			return
 		}
 
@@ -108,7 +109,8 @@ func NetHttp() {
 			}
 
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode("Success : false")
+			res := errorResponseMap("user with id did not exist")
+			json.NewEncoder(w).Encode(res)
 			return
 		}
 	})
@@ -120,4 +122,11 @@ func NetHttp() {
 	} else {
 		fmt.Println("Listen to port 80")
 	}
+}
+
+func errorResponseMap(errorText string) map[string]any {
+	response := map[string]any{}
+	response["success"] = false
+	response["error"] = "user with id did not exist"
+	return response
 }
