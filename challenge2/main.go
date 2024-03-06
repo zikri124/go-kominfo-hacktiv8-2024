@@ -64,6 +64,33 @@ func NetHttp() {
 		// mini quiz
 		// buatlah method
 		// PUT /users/:id untuk edit user by id
+		if r.Method == http.MethodPut {
+			userTemp := User{}
+			if err := json.NewDecoder(r.Body).Decode(&userTemp); err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+
+			pathValue, _ := strconv.Atoi(r.PathValue("id"))
+
+			for i, user := range users {
+				if user.ID == uint(pathValue) {
+					user.Username = userTemp.Username
+					user.Email = userTemp.Email
+
+					users[i] = user
+
+					w.WriteHeader(http.StatusAccepted)
+					json.NewEncoder(w).Encode(users[i])
+					return
+				}
+			}
+
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(User{})
+			return
+		}
+
 		// Delete /users/:id untuk delete user by id
 
 	})
